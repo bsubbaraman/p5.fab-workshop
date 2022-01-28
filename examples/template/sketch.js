@@ -22,33 +22,26 @@ function setup() {
       fab.stopPrint(); // stop streaming the commands to printer.
     });
 
+    let heatButton = createButton('heat!');
+    heatButton.position(20, 140);
+    heatButton.mousePressed(function() {
+      fab.autoHeat(205, 55);
+    });
 }
 
 
 function fabDraw() {
-  // setup!
+  // setup! we'll want to always start fabDraw with these 3 commands:
   fab.setAbsolutePosition(); // set the coordinate system mode
   fab.setERelative(); // it's easier to work with the extruder axis in relative positioning
-  
   fab.autoHome(); // establish a (0,0,0)
-  fab.setTemps(200, 60); // (bedTemp, nozzleTemp). hot! 
 
-  fab.introLine(); // clean the nozzle
-
-  fab.moveRetract(100, 100, 0.2); // moveRetract will move the nozzle without extruding filament
-                                  // it's good for getting to your start location!
-
-  // first steps: extruding filament!
-  fab.moveExtrude(150, 100, 0.2); // a default speed of 25 mm/s is used, 
-                                  // along with a reasonable amount of filament
-  fab.moveExtrude(150, 150, 0.2, 10); // sloow
-  fab.moveExtrude(100, 150, 0.2, 25); // 'normal'
-  fab.moveExtrude(100, 100, 0.2, 80); // fast!
   
-  fab.moveExtrude(100, 100, 1, 0.5, 5); // we can also explicitly set the amount of filament to extrude
 
-  fab.presentPart(); // pull the nozzle away, and retract a bit of filament to stop oozing!
+  
+  fab.presentPart(); // push the bed out to grab your print!
 }
+
 function draw() {
   orbitControl(2, 2, 0.1);
   background(255);

@@ -22,17 +22,22 @@ function setup() {
     stopButton.mousePressed(function() {
       fab.stopPrint(); // stop streaming the commands to printer
     });
+
+  let heatButton = createButton('heat!');
+  heatButton.position(20, 140);
+  heatButton.mousePressed(function() {
+    fab.autoHeat(205, 55);
+  });
 }
 
 
 function fabDraw() {
   // setup printing variables
   // this is a standard setup block:
+  fab.setAbsolutePosition(); // set the coordinate system mode
   fab.setERelative();
-  fab.fanOff();
+  fab.setTemps(205, 55); // wait for nozzle & bed to heat up
   fab.autoHome();
-  fab.setNozzleTemp(205); // wait for nozzle to heat up
-  fab.setBedTemp(55); // wait for bed to heat up
   fab.introLine(); // line back and forth to clean nozzle
     
   /* design your artifact here!
@@ -41,31 +46,30 @@ function fabDraw() {
    */
 
   let startHeight = 0.2;
-  let o = 2;
-  let s = 40;
+  let dotHeight = 2;
+  let speed = 40;
   let x = 100;
   let y = 100;
-  let sf = 0;
-  let maxL = 40;
   let l = 40;
   fab.moveRetract(x, y, startHeight); // move to start
-  for (let h = startHeight; h <= l; h += o) { 
+  
+  for (let h = startHeight; h <= l; h += dotHeight) { 
     // lines
-    fab.moveExtrude(x + l, y+sf, h, s);
-    fab.moveExtrude(x + l - sf, y + l, h, s);
-    fab.moveExtrude(x, y + l - sf, h, s);
-    fab.moveExtrude(x + sf, y, h, s);
+    fab.moveExtrude(x + l, y, h, speed);
+    fab.moveExtrude(x + l, y + l, h, speed);
+    fab.moveExtrude(x, y + l, h, speed);
+    fab.moveExtrude(x, y, h, speed);
 
     // dots
-    fab.moveExtrude(x, y, h + o, 0.4, 5); // move slowly and extrude lots of filament on the dots
-    fab.moveRetract(x + l, y, h, 3 * s); // move quickly from point to point to reduce stringing
-    fab.moveExtrude(x + l, y, h + o, 0.4, 5);
-    fab.moveRetract(x + l - sf, y + l, h, 3 * s);
-    fab.moveExtrude(x + l - sf, y + l, h + o, 0.4, 5);
-    fab.moveRetract(x, y + l - sf, h, 3 * s);
-    fab.moveExtrude(x, y + l - sf, h + o, 0.4, 5);
+    fab.moveExtrude(x, y, h + dotHeight, 0.4, 5); // move slowly and extrude lots of filament on the dots
+    fab.moveRetract(x + l, y, h, 3 * speed); // move quickly from point to point to reduce stringing
+    fab.moveExtrude(x + l, y, h + dotHeight, 0.4, 5);
+    fab.moveRetract(x + l, y + l, h, 3 * speed);
+    fab.moveExtrude(x + l, y + l, h + dotHeight, 0.4, 5);
+    fab.moveRetract(x, y + l, h, 3 * speed);
+    fab.moveExtrude(x, y + l, h + dotHeight, 0.4, 5);
 
-    fab.moveRetract(x + sf, y, h + o, s);
+    fab.moveRetract(x, y, h + dotHeight, speed);
   }
   // end artifact
 
